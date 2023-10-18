@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/ayush6624/go-chatgpt"
 	"html/template"
 	"io"
 	"os"
@@ -18,8 +19,8 @@ type TranslationRequest struct {
 func NewTranslationRequestFromFile(fileName string, sourceLanguage string, destinationLanguage string) TranslationRequest {
 	toReturn := TranslationRequest{
 		SubtitleFileName:     fileName,
-		SourceLanguage:       sourceLanguage,
-		DestinationLanguage:  destinationLanguage,
+		SourceLanguage:       Languages[sourceLanguage],
+		DestinationLanguage:  Languages[destinationLanguage],
 		SubtitleFileContents: "",
 	}
 	explodedName := strings.Split(fileName, ".")
@@ -49,4 +50,12 @@ func (tr *TranslationRequest) ToPrompt(w io.Writer) error {
 	}
 
 	return t.Execute(w, tr)
+}
+
+func (tr *TranslationRequest) WriteResultsToFile(results *chatgpt.ChatResponse) {
+	fileName := strings.Replace(tr.SubtitleFileName, Languages[tr.SourceLanguage], Languages[tr.DestinationLanguage], 1)
+	err := os.WriteFile(fileName, []byte(results.Choices[0].Message.Content), 0700)
+	if err != nil {
+		panic(err)
+	}
 }

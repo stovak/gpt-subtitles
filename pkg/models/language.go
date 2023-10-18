@@ -1,6 +1,6 @@
 package models
 
-var baseLanguages = map[string]string{
+var Languages = map[string]string{
 	"en": "English",
 	"es": "Spanish",
 	"de": "German",
@@ -10,4 +10,6 @@ var baseLanguages = map[string]string{
 	"hi": "Hindi",
 	"pt": "Portuguese",
 	"ru": "Russian",
+	"jp": "Japanese",
+	"ko": "Korean",
 }

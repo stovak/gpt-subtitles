@@ -37,11 +37,13 @@ var rootCmd = &cobra.Command{
 	Use:   "gpt-subtitles",
 	Short: "Translate a subtitle file using GPT-4",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		source := cmd.Flag("sourceLanguage").Value.String()
+		dest := cmd.Flag("destinationLanguage").Value.String()
 		if len(args) < 1 {
 			return fmt.Errorf("must provide a subtitle file")
 		}
 		subtitleFile := args[0]
-		tr := models.NewTranslationRequestFromFile(subtitleFile, "en", "es")
+		tr := models.NewTranslationRequestFromFile(subtitleFile, source, dest)
 		buf := new(bytes.Buffer)
 		err := tr.ToPrompt(buf)
 		if err != nil {
@@ -60,7 +62,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(res.Object.Choices[0].Message)
+		tr.WriteResultsToFile(res)
 		return nil
 	},
 }
@@ -82,6 +84,8 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gpt-subtitles.yaml)")
+	rootCmd.PersistentFlags().String("sourceLanguage", "en", "SourceLanguage... E.g. en for English")
+	rootCmd.PersistentFlags().String("destinationLanguage", "es", "DestinationLanguage E.g. es for Spanish")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
