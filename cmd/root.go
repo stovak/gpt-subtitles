@@ -4,10 +4,10 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"github.com/stovak/gpt-subtitles/pkg/models"
+	"go.uber.org/zap"
 	"log"
 	"os"
 
@@ -16,7 +16,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-var gptClient *chatgpt.Client = GetGPTClient()
+var (
+	GptClient *chatgpt.Client    = GetGPTClient()
+	Logger    *zap.SugaredLogger = initLogger().Sugar()
+)
 
 var cfgFile string
 
@@ -32,30 +35,34 @@ func GetGPTClient() *chatgpt.Client {
 	return client
 }
 
+func initLogger() *zap.Logger {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+	return logger
+}
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gpt-subtitles",
+	Use:   "subtitles",
 	Short: "Translate a subtitle file using GPT-4",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		Logger.Info("Root Command Exec:")
 		source := cmd.Flag("sourceLanguage").Value.String()
 		dest := cmd.Flag("destinationLanguage").Value.String()
 		if len(args) < 1 {
 			return fmt.Errorf("must provide a subtitle file")
 		}
 		subtitleFile := args[0]
-		tr := models.NewTranslationRequestFromFile(subtitleFile, source, dest)
-		buf := new(bytes.Buffer)
-		err := tr.ToPrompt(buf)
+		tr, err := models.NewTranslationRequestFromFile(subtitleFile, source, dest, Logger)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
-		fmt.Println(buf.String())
-		res, err := gptClient.Send(context.Background(), &chatgpt.ChatCompletionRequest{
+		res, err := GptClient.Send(context.Background(), &chatgpt.ChatCompletionRequest{
 			Model: chatgpt.GPT4,
 			Messages: []chatgpt.ChatMessage{
 				{
 					Role:    chatgpt.ChatGPTModelRoleSystem,
-					Content: buf.String(),
+					Content: tr.String(),
 				},
 			},
 		})
@@ -84,12 +91,11 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gpt-subtitles.yaml)")
-	rootCmd.PersistentFlags().String("sourceLanguage", "en", "SourceLanguage... E.g. en for English")
-	rootCmd.PersistentFlags().String("destinationLanguage", "es", "DestinationLanguage E.g. es for Spanish")
+	rootCmd.PersistentFlags().StringP("sourceLanguage", "s", "en", "SourceLanguage... E.g. en for English")
+	rootCmd.PersistentFlags().StringP("destinationLanguage", "d", "es", "DestinationLanguage... E.g. es for Spanish")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -112,6 +118,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		Logger.Infof("Using config file: %s", viper.ConfigFileUsed())
 	}
 }

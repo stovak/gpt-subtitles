@@ -7,6 +7,12 @@ vars:
 
 tasks:
   build:
+    deps:
+      - clean
     cmds:
       - go build -o ./bin/subtitles .
+    silent: true
+  clean:
+    cmds:
+      - rm -rf ./bin
     silent: true
