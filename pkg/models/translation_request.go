@@ -1,24 +1,29 @@
 package models
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/asticode/go-astisub"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"go.uber.org/zap"
 	"golang.org/x/text/language"
 )
 
 type TranslationRequest interface {
-	Translate() error
-	WriteTranslatedToNewFile() error
-	Parse() error
-	String() string
-	GetTranslated() (*astisub.Subtitles, error)
-	GetSourceText() []string
 	GetLogger() *zap.SugaredLogger
 	GetSourceLanguage() language.Tag
+	GetSourceText() []string
+	GetTranslatedText() []string
 	GetTargetLanguage() language.Tag
+	GetTranslated() (*astisub.Subtitles, error)
+	Parse() error
+	String() string
+	Translate() error
+	WriteErrorDiff(translatedText []string) error
+	WriteToFile(variant string, contents string) error
 }
 
 type TranslationRequestBase struct {
@@ -73,4 +78,41 @@ func (tr *TranslationRequestBase) GetSourceLanguage() language.Tag {
 
 func (tr *TranslationRequestBase) GetTargetLanguage() language.Tag {
 	return tr.TargetLanguage
+}
+
+func (tr *TranslationRequestBase) WriteErrorDiff(translatedText []string) error {
+	t := table.NewWriter()
+	t.AppendHeader(table.Row{"Start", "End", "Source", "Translated"})
+	fileName := strings.Replace(
+		tr.SubtitleFileName,
+		tr.Extension,
+		fmt.Sprintf("_%s_error_diff.ttml", tr.TargetLanguage), 1)
+
+	tr.GetLogger().Infof("Writing error diff to %s", fileName)
+	sourceText := tr.GetSourceText()
+	iterations := max(len(sourceText), len(translatedText))
+	for i := 0; i < iterations; i++ {
+		if len(sourceText) <= i {
+			sourceText = append(sourceText, "")
+		}
+		if len(translatedText) <= i {
+			translatedText = append(translatedText, "")
+		}
+		t.AppendRow(table.Row{
+			tr.Subtitles.Items[i].StartAt,
+			tr.Subtitles.Items[i].EndAt,
+			sourceText[i],
+			translatedText[i],
+		})
+	}
+	return tr.WriteToFile(fmt.Sprintf("-%s-%s", "error", tr.TargetLanguage), t.Render())
+}
+
+func (tr *TranslationRequestBase) WriteToFile(variant string, contents string) error {
+	fileName := strings.Replace(
+		tr.SubtitleFileName,
+		tr.Extension,
+		fmt.Sprintf("_%s.ttml", variant), 1)
+	tr.GetLogger().Infof("Writing results %s to %s", variant, fileName)
+	return os.WriteFile(fileName, []byte(contents), 0700)
 }

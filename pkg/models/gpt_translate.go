@@ -3,7 +3,6 @@ package models
 import (
 	"context"
 	"fmt"
-	"github.com/stovak/gpt-subtitles/pkg/util"
 	"html/template"
 	"log"
 	"os"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/asticode/go-astisub"
 	"github.com/ayush6624/go-chatgpt"
+	"github.com/stovak/gpt-subtitles/pkg/util"
 	"go.uber.org/zap"
 )
 
@@ -121,8 +121,7 @@ func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
 	}
 	resultLines := strings.Split(tr.results.Choices[0].Message.Content, "|")
 	if len(resultLines) != len(tr.Subtitles.Items) {
-		tr.Logger.Errorf("number of lines in result (%d) does not match number of lines in source (%d)", len(resultLines), len(tr.Subtitles.Items))
-		tr.Logger.Errorf("Returned Translation: %#v", tr.results)
+		_ = tr.WriteErrorDiff(resultLines)
 		return nil, fmt.Errorf("number of lines in result (%d) does not match number of lines in source (%d)", len(resultLines), len(tr.Subtitles.Items))
 	}
 	for num, item := range tr.Subtitles.Items {
@@ -144,16 +143,9 @@ func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
 	return toReturn, nil
 }
 
-func (tr *GPTTranslationRequest) WriteTranslatedToNewFile() error {
-	fileName := strings.Replace(
-		tr.SubtitleFileName,
-		tr.Extension,
-		fmt.Sprintf("_%s.ttml", tr.TargetLanguage), 1)
-
-	tr.GetLogger().Infof("Writing results to %s", fileName)
-	translated, err := tr.GetTranslated()
-	if err != nil {
-		return err
+func (tr *GPTTranslationRequest) GetTranslatedText() []string {
+	if tr.results == nil {
+		return []string{}
 	}
-	return translated.Write(fileName)
+	return strings.Split(tr.results.Choices[0].Message.Content, "|")
 }

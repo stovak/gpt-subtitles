@@ -10,6 +10,6 @@ var Languages = map[string]string{
 	"hi": "Hindi",
 	"pt": "Portuguese",
 	"ru": "Russian",
-	"jp": "Japanese",
+	"ja": "Japanese",
 	"ko": "Korean",
 }

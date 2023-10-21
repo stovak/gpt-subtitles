@@ -105,3 +105,11 @@ func (tr *GoogleTranslateRequest) WriteTranslatedToNewFile() error {
 	}
 	return translated.Write(fileName)
 }
+
+func (tr *GoogleTranslateRequest) GetTranslatedText() []string {
+	var toReturn []string
+	for _, result := range tr.results {
+		toReturn = append(toReturn, result.Text)
+	}
+	return toReturn
+}

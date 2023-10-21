@@ -6,7 +6,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/stovak/gpt-subtitles/pkg/models"
 	"go.uber.org/zap"
 	"os"
 )
@@ -28,45 +27,8 @@ var rootCmd = &cobra.Command{
 	Use:   "subtitles",
 	Short: "Translate a subtitle file using GPT-4 or Google Translate",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var tr models.TranslationRequest
-		Logger.Info("Root Command Exec:")
-		source, err := cmd.Flags().GetString("sourceLanguage")
-		if err != nil {
-			return err
-		}
-		dest, err := cmd.Flags().GetString("targetLanguage")
-		if err != nil {
-			return err
-		}
-		engine, err := cmd.Flags().GetString("engine")
-		if err != nil {
-			return err
-		}
-		switch engine {
-		case "google":
-			Logger.Info("Using Google Translate")
-			tr, err = models.NewGoogleTranslationRequestFromFile(args[0], source, dest, Logger)
-			break
-		case "gpt":
-			Logger.Info("Using GPT Translate")
-			tr, err = models.NewGPTTranslationRequestFromFile(args[0], source, dest, Logger)
-			break
-		default:
-			Logger.Fatalf("Unknown engine %s", engine)
-		}
-		if err != nil {
-			return err
-		}
-		err = tr.Parse()
-		if err != nil {
-			return err
-		}
-		err = tr.Translate()
-		if err != nil {
-			return err
-		}
-		err = tr.WriteTranslatedToNewFile()
-		return err
+		// Display help messages from all commands
+		return cmd.Help()
 	},
 }
 
