@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" ttp:timeBase="media" xmlns:tts="http://www.w3.org/ns/ttml#styling" xml:lang="en" xmlns:ttm="http://www.w3.org/ns/ttml#metadata">
+  <head>
+    <metadata>
+      <ttm:title></ttm:title>
+    </metadata>
+    <styling>
+      <style xml:id="s0" tts:backgroundColor="black" tts:fontStyle="normal" tts:fontSize="16px" tts:fontFamily="sansSerif" tts:color="white" />
+    </styling>
+    <layout>
+      <region tts:extent="80% 40%" tts:origin="10% 10%" tts:displayAlign="before" tts:textAlign="start" xml:id="topLeft" />
+      <region tts:extent="80% 40%" tts:origin="10% 30%" tts:displayAlign="center" tts:textAlign="start" xml:id="centerLeft" />
+      <region tts:extent="80% 40%" tts:origin="10% 50%" tts:displayAlign="after" tts:textAlign="start" xml:id="bottomLeft" />
+      <region tts:extent="80% 40%" tts:origin="10% 10%" tts:displayAlign="before" tts:textAlign="center" xml:id="topCenter" />
+      <region tts:extent="80% 40%" tts:origin="10% 30%" tts:displayAlign="center" tts:textAlign="center" xml:id="centerСenter" />
+      <region tts:extent="80% 40%" tts:origin="10% 50%" tts:displayAlign="after" tts:textAlign="center" xml:id="bottomCenter" />
+      <region tts:extent="80% 40%" tts:origin="10% 10%" tts:displayAlign="before" tts:textAlign="end" xml:id="topRight" />
+      <region tts:extent="80% 40%" tts:origin="10% 30%" tts:displayAlign="center" tts:textAlign="end" xml:id="centerRight" />
+      <region tts:extent="80% 40%" tts:origin="10% 50%" tts:displayAlign="after" tts:textAlign="end" xml:id="bottomRight" />
+    </layout>
+  </head>
+  <body style="s0">
+    <div>
+      <p begin="90.5s" xml:id="p0" end="93.583s">Yes. Yes. Uh uh. I&#039;d like to report an emergency.</p>
+      <p begin="95.5s" xml:id="p1" end="96.333s">Yes.</p>
+      <p begin="149.042s" xml:id="p2" end="153.083s">Do I know you? I feel like I know you, you. Detective don&#039;t I know him.</p>
+      <p begin="153.083s" xml:id="p3" end="154.292s">I don&#039;t know the people you know.</p>
+      <p begin="155.0s" xml:id="p4" end="158.042s">I can&#039;t help but having the feeling that I feel like I know you. Beats me.</p>
+      <p begin="158.708s" xml:id="p5" end="159.75s">Can I have your name for the record?</p>
+      <p begin="160.708s" xml:id="p6" end="161.625s">I want my camera back.</p>
+      <p begin="162.333s" xml:id="p7" end="163.167s">That&#039;s a funny name.</p>
+      <p begin="163.708s" xml:id="p8" end="165.167s">I bet that was awkward in high school.</p>
+      <p begin="166.375s" xml:id="p9" end="167.292s">Where&#039;s my lawyer?</p>
+      <p begin="167.958s" xml:id="p10" end="169.833s">On the way. We can wait until she gets here.</p>
+      <p begin="169.875s" xml:id="p11" end="170.708s">Legally.</p>
+      <p begin="171.125s" xml:id="p12" end="173.5s">You can&#039;t keep my phone. It&#039;s a first ammend-</p>
+      <p begin="173.5s" xml:id="p13" end="176.75s">Why don&#039;t you just get comfortable and take off your jacket?</p>
+      <p begin="177.458s" xml:id="p14" end="182.292s">I&#039;m fine, thanks. And, uh, I would like to speak to my lawyer. So,</p>
+      <p begin="182.625s" xml:id="p15" end="184.5s">I mean, you can&#039;t keep me?</p>
+      <p begin="184.5s" xml:id="p16" end="186.5s">You were in the proximity of two different murders.</p>
+      <p begin="187.333s" xml:id="p17" end="189.083s">We&#039;re gonna keep you as long as we keep you.</p>
+      <p begin="190.5s" xml:id="p18" end="191.583s">Are you accusing me of something?</p>
+      <p begin="191.708s" xml:id="p19" end="192.75s">You&#039;re not under arrest?</p>
+      <p begin="193.875s" xml:id="p20" end="197.167s">Well, you say that, but it does feel like I&#039;m under arrest.</p>
+      <p begin="197.417s" xml:id="p21" end="200.083s">Wonder why it feels that way? Have you committed a crime or something?</p>
+      <p begin="200.125s" xml:id="p22" end="201.875s">I plead the First Amendment.</p>
+      <p begin="202.875s" xml:id="p23" end="203.708s">You mean the fifth?</p>
+      <p begin="203.917s" xml:id="p24" end="206.5s">No, the first. I like the part about free press.</p>
+      <p begin="206.917s" xml:id="p25" end="208.792s">celebrity-news.flash</p>
+      <p begin="208.917s" xml:id="p26" end="212.125s">Now is that a real thing or did you just make that up?</p>
+      <p begin="212.125s" xml:id="p27" end="216.375s">Because that name just f*****g screams. Excellence in journalism.</p>
+      <p begin="216.458s" xml:id="p28" end="218.708s">Well, that&#039;s what we&#039;re going for. Glad you noticed.</p>
+      <p begin="219.167s" xml:id="p29" end="220.292s">What are you? One of the owners?</p>
+      <p begin="220.583s" xml:id="p30" end="224.333s">An investor--employee--former employee.</p>
+      <p begin="224.375s" xml:id="p31" end="228.167s">So you do or you don&#039;t work there, Mr. Dan. F*****g Cronkite.</p>
+      <p begin="228.333s" xml:id="p32" end="231.375s">Walter F*****g Cronkite and Dan F*****g rather are two different people.</p>
+      <p begin="231.667s" xml:id="p33" end="234.417s">Do you or do you not work for celebrity news--?</p>
+      <p begin="234.667s" xml:id="p34" end="236.417s">No, I do. I did. It&#039;s complicated.</p>
+      <p begin="236.75s" xml:id="p35" end="237.583s">Uncomplicate it!</p>
+      <p begin="238.25s" xml:id="p36" end="242.917s">Why are you being so evasive? Didn&#039;t you used work for Rolling Stone?</p>
+      <p begin="243.917s" xml:id="p37" end="247.458s">The New Yorker and the Times and then later. MSNBC.</p>
+      <p begin="248.0s" xml:id="p38" end="249.0s">That&#039;s how I know you!</p>
+      <p begin="249.458s" xml:id="p39" end="253.625s">You did the studio sexual harassment story that got all those people fired,</p>
+      <p begin="254.167s" xml:id="p40" end="257.25s">Demanding sexual favors from young actresses in exchange for movie roles,</p>
+      <p begin="257.25s" xml:id="p41" end="259.417s">is what got them fired. I just told people about it.</p>
+      <p begin="259.417s" xml:id="p42" end="264.375s">Now you cover celebrity crotch shop. Your mom must be so proud.</p>
+      <p begin="265.375s" xml:id="p43" end="267.125s">I think she... would be.</p>
+      <p begin="269.167s" xml:id="p44" end="274.042s">So why would a big-shot, primetime journalist go to work</p>
+      <p begin="274.083s" xml:id="p45" end="275.667s">for some sleazy rag sheet?</p>
+      <p begin="276.042s" xml:id="p46" end="278.5s">Actually, it can&#039;t be a rag sheet because there&#039;s no print edition.</p>
+      <p begin="280.167s" xml:id="p47" end="281.0s">He&#039;s kinda right...</p>
+      <p begin="282.917s" xml:id="p48" end="283.708s">It&#039;s um, my,</p>
+      <p begin="283.708s" xml:id="p49" end="287.167s">my husband got a job with a law firm in LA and then I have a friend who&#039;s an</p>
+      <p begin="287.167s" xml:id="p50" end="288.208s">editor and he started a website.</p>
+      <p begin="288.792s" xml:id="p51" end="292.292s">So you burned all your bridges with the studios</p>
+      <p begin="292.292s" xml:id="p52" end="294.583s">and the only people in this town who will end up hiring you is some sleazy rag sheets.</p>
+      <p begin="294.792s" xml:id="p53" end="299.75s">Again, not a rag sheet, no print edition. Uh, this is a great chat we&#039;re having,</p>
+      <p begin="300.333s" xml:id="p54" end="301.708s">but I really would like to go home.</p>
+      <p begin="301.708s" xml:id="p55" end="303.083s">What&#039;s your hurry?</p>
+      <p begin="303.083s" xml:id="p56" end="303.917s">You&#039;re not  under arrest.</p>
+      <p begin="304.542s" xml:id="p57" end="308.708s">You say that, but you know, I really don&#039;t think I can leave. Can I?</p>
+      <p begin="309.667s" xml:id="p58" end="311.542s">It&#039;s in your best interest to talk to us.</p>
+      <p begin="312.458s" xml:id="p59" end="316.5s">As far as I&#039;m concerned. This is all a friendly conversation.</p>
+      <p begin="317.583s" xml:id="p60" end="320.167s">Well then how about them? Lakers?</p>
+      <p begin="322.667s" xml:id="p61" end="323.833s">Actually I&#039;d like to talk about luggage.</p>
+      <p begin="325.75s" xml:id="p62" end="329.958s">We can&#039;t afford this house. Then why are we here? Benny said I had to see it.</p>
+      <p begin="330.75s" xml:id="p63" end="331.875s">How is it? You know, this person</p>
+      <p begin="332.458s" xml:id="p64" end="333.417s">We went to Harvard together.</p>
+      <p begin="335.5s" xml:id="p65" end="339.083s">How is it that everyone I know who went to Harvard name-drops that</p>
+      <p begin="339.083s" xml:id="p66" end="339.917s">into every conversation</p>
+      <p begin="340.708s" xml:id="p67" end="342.542s">Name dropping was compulsory for first years.</p>
+      <p begin="348.208s" xml:id="p68" end="349.667s">Well, it&#039;s a nice house.</p>
+      <p begin="350.708s" xml:id="p69" end="354.5s">I didn&#039;t say it wasn&#039;t. That pool area!</p>
+      <p begin="355.25s" xml:id="p70" end="359.042s">It&#039;s fantastic. I mean, I could could just totally see it. Oh yeah,</p>
+      <p begin="359.042s" xml:id="p71" end="363.0s">Yeah totally. Oh, and how wouldn&#039;t our friends be jealous?</p>
+      <p begin="363.667s" xml:id="p72" end="364.875s">We can&#039;t afford it.</p>
+      <p begin="368.958s" xml:id="p73" end="372.292s">Well, we have to think about it as an investment.</p>
+      <p begin="372.333s" xml:id="p74" end="377.0s">You know, the homes are appreciating. Look, we still can&#039;t afford it.</p>
+      <p begin="377.583s" xml:id="p75" end="381.042s">I know the housing market. I took a real estate investment class.</p>
+      <p begin="381.042s" xml:id="p76" end="385.417s">So help me, if you say Harvard, I will become violent. We can&#039;t afford it right now.</p>
+      <p begin="390.875s" xml:id="p77" end="394.125s">So why are there overnight bags in our back seat?</p>
+      <p begin="395.083s" xml:id="p78" end="398.667s">Should I be interviewing divorce lawyers right now?</p>
+      <p begin="398.667s" xml:id="p79" end="402.792s">You can&#039;t get rid of me that easily. They&#039;re gifts for a new client</p>
+      <p begin="404.708s" xml:id="p80" end="409.375s">Animal prints? Who are they? Retirees in the square states.</p>
+      <p begin="409.917s" xml:id="p81" end="414.167s">Close Palm Springs. What the hell did they want with you?</p>
+      <p begin="414.958s" xml:id="p82" end="419.625s">Excuse me. Some people think I&#039;m useful as opposed to me.</p>
+      <p begin="419.625s" xml:id="p83" end="423.042s">You are. I merely find you decorative. Oh,</p>
+      <p begin="423.292s" xml:id="p84" end="426.0s">did you just call me a trophy husband? So sweet.</p>
+      <p begin="430.042s" xml:id="p85" end="434.417s">We can&#039;t afford it though. Not right now.</p>
+      <p begin="435.667s" xml:id="p86" end="436.5s">You&#039;re right. I know you&#039;re right.</p>
+      <p begin="436.792s" xml:id="p87" end="439.708s">And that was the first mention of the clients in Palm Springs?</p>
+      <p begin="440.708s" xml:id="p88" end="442.708s">The first one I remember.</p>
+      <p begin="442.708s" xml:id="p89" end="445.25s">And at that time, your husband had all the bags in his possession.</p>
+      <p begin="445.667s" xml:id="p90" end="449.667s">All of them. And when was the next time you saw them? Which one? Any of them.</p>
+      <p begin="535.167s" xml:id="p91" end="535.5s">So...</p>
+      <p begin="535.5s" xml:id="p92" end="537.208s">You lost him in Union Station?</p>
+      <p begin="541.792s" xml:id="p93" end="545.833s">I left him in Union Station because I figured out where the bag was going.</p>
+      <p begin="552.792s" xml:id="p94" end="553.083s">Then</p>
+      <p begin="553.083s" xml:id="p95" end="554.042s">What did you do?</p>
+      <p begin="596.917s" xml:id="p96" end="598.792s">I am sorry. Did you say Legos?</p>
+      <p begin="599.333s" xml:id="p97" end="602.375s">Sometimes I like to play with Legos. It helps me get to sleep.</p>
+      <p begin="602.5s" xml:id="p98" end="604.875s">Where&#039;s the bag now? Which one?</p>
+      <p begin="605.625s" xml:id="p99" end="606.458s">Many of them.</p>
+      <p begin="606.917s" xml:id="p100" end="609.375s">I don&#039;t have them. It&#039;s not what I asked.</p>
+      <p begin="609.917s" xml:id="p101" end="611.875s">How can I know where they are if I don&#039;t have them?</p>
+      <p begin="612.208s" xml:id="p102" end="615.125s">You haven&#039;t answered our question. Are you sweating?</p>
+      <p begin="615.125s" xml:id="p103" end="617.375s">Maybe you should take off your jacket. I&#039;m</p>
+      <p begin="617.375s" xml:id="p104" end="621.917s">Comfortable. Thanks. I I I don&#039;t know where they are.</p>
+      <p begin="623.167s" xml:id="p105" end="628.083s">I don&#039;t believe you. I really need you to take off that jacket.</p>
+      <p begin="637.542s" xml:id="p106" end="639.417s">Get all the clothes and some scrapings too!</p>
+      <p begin="641.5s" xml:id="p107" end="643.958s">It&#039;s not often we get a Pulitzer Prize winner here.</p>
+      <p begin="645.042s" xml:id="p108" end="646.667s">I think this might be our first actually.</p>
+      <p begin="647.25s" xml:id="p109" end="650.708s">Lucky mean have you contacted my lawyer or do I--</p>
+      <p begin="650.958s" xml:id="p110" end="652.833s">So what do you get when you win a Pulitzer Prize?</p>
+      <p begin="653.292s" xml:id="p111" end="656.625s">Unrealistic expectations ...and an ulcer.</p>
+      <p begin="657.375s" xml:id="p112" end="662.083s">Okay, so let&#039;s get back to your f*g hag.</p>
+      <p begin="663.042s" xml:id="p113" end="667.417s">Oh, I&#039;m sorry. Was that politically incorrect? Would she have preferred &quot;FRUIT FLY&quot;?</p>
+      <p begin="668.292s" xml:id="p114" end="671.625s">She&#039;s my friend and I walked her dog sometimes.</p>
+      <p begin="673.458s" xml:id="p115" end="675.875s">So how was she when you walked her dog?</p>
+      <p begin="675.958s" xml:id="p116" end="677.083s">She wasn&#039;t there.</p>
+      <p begin="677.083s" xml:id="p117" end="677.625s">So you Have a key,</p>
+      <p begin="677.625s" xml:id="p118" end="679.958s">There&#039;s an electronic lock. I have a code.</p>
+      <p begin="679.958s" xml:id="p119" end="681.208s">So you Picked up the dog and then what?</p>
+      <p begin="681.75s" xml:id="p120" end="685.917s">I took Luke to the dog park. Down the block?</p>
+      <p begin="685.917s" xml:id="p121" end="687.75s">There&#039;s a dog park on site. It&#039;s just adjacent to the back of the building.</p>
+      <p begin="687.75s" xml:id="p122" end="689.167s">Ok, so how did you get into the complex?</p>
+      <p begin="689.542s" xml:id="p123" end="690.375s">I live there.</p>
+      <p begin="690.875s" xml:id="p124" end="692.792s">I thought you had a house. I moved. When was that?</p>
+      <p begin="693.375s" xml:id="p125" end="694.208s">After.</p>
+      <p begin="695.417s" xml:id="p126" end="698.75s">After your husband died? I get that.</p>
+      <p begin="699.625s" xml:id="p127" end="704.333s">After my mom died, I couldn&#039;t go back to the house or I was losing it.</p>
+      <p begin="708.292s" xml:id="p128" end="712.542s">I still get the feeling you&#039;re being evasive. You&#039;re an experienced reporter.</p>
+      <p begin="713.083s" xml:id="p129" end="714.875s">I can&#039;t help but believe that,</p>
+      <p begin="715.083s" xml:id="p130" end="718.208s">That I am responsible for my husband&#039;s death?</p>
+      <p begin="719.292s" xml:id="p131" end="722.542s">That you&#039;re working on the story and you got in over uour head.</p>
+      <p begin="722.542s" xml:id="p132" end="723.042s">The only story worth reporting on</p>
+      <p begin="723.042s" xml:id="p133" end="727.125s">are the ones where you get in over your head.</p>
+      <p begin="732.875s" xml:id="p134" end="734.667s">Why don&#039;t we do this?</p>
+      <p begin="734.833s" xml:id="p135" end="739.75s">Why don&#039;t you tell me what you know? Because I&#039;m the one</p>
+      <p begin="739.875s" xml:id="p136" end="742.0s">who&#039;s lost. Well, everything,</p>
+      <p begin="744.75s" xml:id="p137" end="749.542s">The bullets we pulled out of your neighbor are an exact match</p>
+      <p begin="749.542s" xml:id="p138" end="750.625s">to the bullets we pulled out of your husband.</p>
+      <p begin="752.208s" xml:id="p139" end="753.042s">Her name was Linda.</p>
+      <p begin="753.958s" xml:id="p140" end="758.708s">The bullets the coroner pulled out of your husband</p>
+      <p begin="758.75s" xml:id="p141" end="761.458s">also match a robbery gone wrong in San Bernardino,</p>
+      <p begin="762.25s" xml:id="p142" end="766.125s">A dispensary was robbed and the store owner was bleeding out because the</p>
+      <p begin="766.125s" xml:id="p143" end="767.417s">ambulance didn&#039;t get there in time.</p>
+      <p begin="771.042s" xml:id="p144" end="773.875s">So here&#039;s the thing. I believe you,</p>
+      <p begin="774.917s" xml:id="p145" end="777.583s">I don&#039;t think you murdered your husband or your neighbor.</p>
+      <p begin="778.083s" xml:id="p146" end="780.833s">Well that&#039;s one down, uh, 12 million people in Los Angeles.</p>
+      <p begin="781.167s" xml:id="p147" end="783.625s">You don&#039;t have us to know who it could be, do you?</p>
+      <p begin="783.625s" xml:id="p148" end="784.792s">Because If you know, you should tell us</p>
+      <p begin="785.917s" xml:id="p149" end="787.25s">And what&#039;ll you do if I do</p>
+      <p begin="787.333s" xml:id="p150" end="788.25s">Arrest them,</p>
+      <p begin="789.5s" xml:id="p151" end="792.375s">There&#039;s no proof. How do you know? Because they don&#039;t leave any proof.</p>
+      <p begin="792.542s" xml:id="p152" end="795.083s">There&#039;s no evidence There&#039;s more than one person involved.</p>
+      <p begin="795.292s" xml:id="p153" end="798.333s">Only One person pulled the trigger, but others told them to.</p>
+      <p begin="798.875s" xml:id="p154" end="801.125s">We think we know who they are, but we need you to tell us.</p>
+      <p begin="802.333s" xml:id="p155" end="803.167s">Okay.</p>
+      <p begin="804.458s" xml:id="p156" end="805.667s">Who pulled the trigger?</p>
+      <p begin="808.125s" xml:id="p157" end="811.333s">His name is Juanna-b... &quot;Wanna be&quot;.</p>
+      <p begin="812.5s" xml:id="p158" end="814.75s">That&#039;s what my husband told me the last I heard.</p>
+      <p begin="814.75s" xml:id="p159" end="818.708s">But I have since learned that his name is Juan Bartolomé.</p>
+      <p begin="819.292s" xml:id="p160" end="820.125s">&quot;Juanna B&quot; ... cute.</p>
+      <p begin="820.417s" xml:id="p161" end="823.583s">He&#039;s A low level lacking and he would never have been able to do it without</p>
+      <p begin="823.583s" xml:id="p162" end="825.042s">permission from the guys he works for.</p>
+      <p begin="825.25s" xml:id="p163" end="826.042s">Who does he work for?</p>
+      <p begin="826.042s" xml:id="p164" end="830.833s">They&#039;re sort of, sort of, um, like a concierge service, uh, to the studios.</p>
+      <p begin="831.25s" xml:id="p165" end="835.5s">It&#039;s like Amazon for whatever. Amazon can&#039;t deliver:</p>
+      <p begin="835.75s" xml:id="p166" end="839.542s">weed, shrooms, Adderall, dick, p***y, whatever it is.</p>
+      <p begin="839.583s" xml:id="p167" end="842.042s">They can deliver it on site, no questions asked. And those bags...</p>
+      <p begin="842.292s" xml:id="p168" end="846.75s">those are their calling card.  And it&#039;s whatever it is that they can&#039;t grow,</p>
+      <p begin="847.0s" xml:id="p169" end="848.833s">they can import or steal.</p>
+      <p begin="848.833s" xml:id="p170" end="851.083s">You still haven&#039;t told us who the f**k is behind this.</p>
+      <p begin="851.125s" xml:id="p171" end="852.208s">(mumbles) The Caftan Mafia.</p>
+      <p begin="852.292s" xml:id="p172" end="856.458s">who? They call themselves the Caftan Mafia.</p>
+      <p begin="857.833s" xml:id="p173" end="861.917s">And this all started because they needed a lawyer.</p>
+    </div>
+  </body>
+</tt>

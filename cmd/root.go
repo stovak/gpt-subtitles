@@ -4,36 +4,19 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
-	"fmt"
-	"github.com/stovak/gpt-subtitles/pkg/models"
-	"go.uber.org/zap"
-	"log"
-	"os"
-
-	"github.com/ayush6624/go-chatgpt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/stovak/gpt-subtitles/pkg/models"
+	"go.uber.org/zap"
+	"os"
+	"strings"
 )
 
 var (
-	GptClient *chatgpt.Client    = GetGPTClient()
-	Logger    *zap.SugaredLogger = initLogger().Sugar()
+	Logger *zap.SugaredLogger = initLogger().Sugar()
 )
 
 var cfgFile string
-
-func GetGPTClient() *chatgpt.Client {
-	key := os.Getenv("OPENAI_API_KEY")
-	if key == "" {
-		log.Fatal("OPENAI_API_KEY environment variable not set")
-	}
-	client, err := chatgpt.NewClient(key)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return client
-}
 
 func initLogger() *zap.Logger {
 	logger, _ := zap.NewDevelopment()
@@ -46,31 +29,51 @@ var rootCmd = &cobra.Command{
 	Use:   "subtitles",
 	Short: "Translate a subtitle file using GPT-4",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var tr models.TranslationRequest
 		Logger.Info("Root Command Exec:")
-		source := cmd.Flag("sourceLanguage").Value.String()
-		dest := cmd.Flag("destinationLanguage").Value.String()
-		if len(args) < 1 {
-			return fmt.Errorf("must provide a subtitle file")
-		}
-		subtitleFile := args[0]
-		tr, err := models.NewTranslationRequestFromFile(subtitleFile, source, dest, Logger)
+		source, err := cmd.Flags().GetString("sourceLanguage")
 		if err != nil {
 			return err
 		}
-		res, err := GptClient.Send(context.Background(), &chatgpt.ChatCompletionRequest{
-			Model: chatgpt.GPT4,
-			Messages: []chatgpt.ChatMessage{
-				{
-					Role:    chatgpt.ChatGPTModelRoleSystem,
-					Content: tr.String(),
-				},
-			},
-		})
+		dest, err := cmd.Flags().GetString("targetLanguage")
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
-		tr.WriteResultsToFile(res)
-		return nil
+		engine, err := cmd.Flags().GetString("engine")
+		if err != nil {
+			return err
+		}
+		switch engine {
+		case "google":
+			Logger.Info("Using Google Translate")
+			tr, err = models.NewGoogleTranslationRequestFromFile(args[0], source, dest, Logger)
+			break
+		case "gpt":
+			Logger.Info("Using GPT Translate")
+			tr, err = models.NewGPTTranslationRequestFromFile(args[0], source, dest, Logger)
+			break
+		default:
+			Logger.Fatalf("Unknown engine %s", engine)
+		}
+		if err != nil {
+			return err
+		}
+		err = tr.Parse()
+		if err != nil {
+			return err
+		}
+		err = tr.Translate()
+		if err != nil {
+			return err
+		}
+		translated, err := tr.GetTranslated()
+		if err != nil {
+			return err
+		}
+		buf := new(strings.Builder)
+		err = translated.WriteToTTML(buf)
+		Logger.Debugf("Translated: %s", buf.String())
+		return err
 	},
 }
 
@@ -92,7 +95,8 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gpt-subtitles.yaml)")
 	rootCmd.PersistentFlags().StringP("sourceLanguage", "s", "en", "SourceLanguage... E.g. en for English")
-	rootCmd.PersistentFlags().StringP("destinationLanguage", "d", "es", "DestinationLanguage... E.g. es for Spanish")
+	rootCmd.PersistentFlags().StringP("targetLanguage", "t", "es", "DestinationLanguage... E.g. es for Spanish")
+	rootCmd.PersistentFlags().StringP("engine", "e", "google", "Translation Engine: google or gpt")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -111,7 +115,7 @@ func initConfig() {
 		// Search config in home directory with name ".gpt-subtitles" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".gpt-subtitles")
+		viper.SetConfigName(".subtitles")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

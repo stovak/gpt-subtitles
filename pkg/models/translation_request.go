@@ -1,86 +1,76 @@
 package models
 
 import (
-	"github.com/asticode/go-astisub"
-	"go.uber.org/zap"
-	"html/template"
-	"io"
 	"log"
-	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/ayush6624/go-chatgpt"
+	"github.com/asticode/go-astisub"
+	"go.uber.org/zap"
+	"golang.org/x/text/language"
 )
 
-type TranslationRequest struct {
-	SubtitleFileName     string
-	Extension            string
-	SourceLanguage       string
-	DestinationLanguage  string
-	SubtitleFileContents string
-	Logger               *zap.SugaredLogger
+type TranslationRequest interface {
+	Translate() error
+	WriteTranslatedToNewFile() error
+	Parse() error
+	String() string
+	GetTranslated() (*astisub.Subtitles, error)
+	GetSourceText() []string
 }
 
-func NewTranslationRequestFromFile(fileName string, sourceLanguage string, destinationLanguage string, log *zap.SugaredLogger) (TranslationRequest, error) {
-	subs, err := astisub.OpenFile(fileName)
+type TranslationRequestBase struct {
+	SourceLanguage   language.Tag
+	TargetLanguage   language.Tag
+	SubtitleFileName string
+	Extension        string
+	Subtitles        *astisub.Subtitles
+	Logger           *zap.SugaredLogger
+}
+
+func (tr *TranslationRequestBase) ParseSourceTarget(source string, target string) {
+	tr.SourceLanguage = language.MustParse(source)
+	tr.TargetLanguage = language.MustParse(target)
+}
+
+func (tr *TranslationRequestBase) Parse() error {
+	var err error
+	tr.Subtitles, err = astisub.OpenFile(tr.SubtitleFileName)
+	tr.Extension = filepath.Ext(tr.SubtitleFileName)
+	return err
+}
+
+func (tr *TranslationRequestBase) WriteTranslatedToNewFile() error {
+	fileName := strings.Replace(tr.SubtitleFileName, tr.Extension, ".ttml", 1)
+	log.Printf("Writing results to %s", fileName)
+	translated, err := tr.GetTranslated()
 	if err != nil {
-		return TranslationRequest{}, err
+		return err
 	}
-	buf := new(strings.Builder)
-	err = subs.WriteToSRT(buf)
-	toReturn := TranslationRequest{
-		SubtitleFileName:     fileName,
-		SourceLanguage:       Languages[sourceLanguage],
-		DestinationLanguage:  Languages[destinationLanguage],
-		SubtitleFileContents: buf.String(),
-		Logger:               log,
-	}
-	explodedName := strings.Split(fileName, ".")
-	toReturn.Extension = explodedName[len(explodedName)-1]
-
-	return toReturn, nil
+	return translated.Write(fileName)
 }
 
-func NewTranslationRequestFromContents(contents string, extension string, sourceLanguage string, destinationLanguage string, log *zap.SugaredLogger) TranslationRequest {
-	return TranslationRequest{
-		SubtitleFileContents: contents,
-		Extension:            extension,
-		SourceLanguage:       sourceLanguage,
-		DestinationLanguage:  destinationLanguage,
-		Logger:               log,
-	}
+func (tr *TranslationRequestBase) GetTranslated() (*astisub.Subtitles, error) {
+	panic("implement me")
 }
 
-func (tr *TranslationRequest) String() string {
+// GetSourceText returns a string of all the lines in the subtitle file
+func (tr *TranslationRequestBase) GetSourceText() []string {
+	var toReturn []string
+	for _, item := range tr.Subtitles.Items {
+		for _, line := range item.Lines {
+			toReturn = append(toReturn, line.String())
+		}
+	}
+	tr.Logger.Debugf("Split text: %+v", toReturn)
+	return toReturn
+}
+
+func (tr *TranslationRequestBase) String() string {
 	buf := new(strings.Builder)
-	err := tr.ToPrompt(buf)
+	err := tr.Subtitles.WriteToTTML(buf)
 	if err != nil {
-		return ""
+		tr.Logger.Fatalf("Error writing to string: %s", err)
 	}
 	return buf.String()
-}
-
-func (tr *TranslationRequest) ToPrompt(w io.Writer) error {
-	var t = template.Must(template.ParseFiles("templates/gpt-subtitle-request.tmpl"))
-
-	if tr.SubtitleFileContents == "" {
-		fileContents, err := os.ReadFile(tr.SubtitleFileName)
-		if err != nil {
-			panic(err)
-		}
-		tr.SubtitleFileContents = string(fileContents)
-	}
-
-	return t.Execute(w, tr)
-}
-
-func (tr *TranslationRequest) WriteResultsToFile(results *chatgpt.ChatResponse) {
-	fileName := strings.Replace(tr.SubtitleFileName, tr.SourceLanguage, tr.DestinationLanguage, 1)
-	log.Printf("Writing results to %s", fileName)
-	splitText := strings.Split(results.Choices[0].Message.Content, "===")
-	tr.Logger.Debugf("Split text: %+v", splitText)
-	//err := os.WriteFile(fileName, []byte(), 0700)
-	//if err != nil {
-	//	panic(err)
-	//}
 }
