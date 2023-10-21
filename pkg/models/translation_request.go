@@ -99,8 +99,6 @@ func (tr *TranslationRequestBase) WriteErrorDiff(translatedText []string) error 
 			translatedText = append(translatedText, "")
 		}
 		t.AppendRow(table.Row{
-			tr.Subtitles.Items[i].StartAt,
-			tr.Subtitles.Items[i].EndAt,
 			sourceText[i],
 			translatedText[i],
 		})
