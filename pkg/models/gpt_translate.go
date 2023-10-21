@@ -2,11 +2,13 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"github.com/stovak/gpt-subtitles/pkg/util"
 	"html/template"
 	"log"
 	"os"
 	"path"
+	"reflect"
 	"strings"
 
 	"github.com/asticode/go-astisub"
@@ -109,7 +111,7 @@ func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
 			return nil, err
 		}
 	}
-	toReturn := astisub.NewSubtitles()
+	toReturn := reflect.ValueOf(tr.Subtitles).Elem().Interface().(astisub.Subtitles)
 	region, _ := tr.TargetLanguage.Region()
 
 	toReturn.Regions = map[string]*astisub.Region{
@@ -120,18 +122,23 @@ func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, line := range strings.Split(tr.results.Choices[0].Message.Content, "\n") {
-		toReturn.Items = append(toReturn.Items, &astisub.Item{
-			Lines: []astisub.Line{
-				{
-					Items: []astisub.LineItem{
-						{
-							Text: line,
-						},
-					},
-				},
-			},
-		})
+	resultLines := strings.Split(tr.results.Choices[0].Message.Content, "\n")
+	for i, _ := range tr.Subtitles.Items {
+		toReturn.Items[i].Lines[0].Items[0].Text = resultLines[i]
 	}
-	return toReturn, nil
+	return &toReturn, nil
+}
+
+func (tr *GPTTranslationRequest) WriteTranslatedToNewFile() error {
+	fileName := strings.Replace(
+		tr.SubtitleFileName,
+		tr.Extension,
+		fmt.Sprintf("_%s.ttml", tr.TargetLanguage), 1)
+
+	log.Printf("Writing results to %s", fileName)
+	translated, err := tr.GetTranslated()
+	if err != nil {
+		return err
+	}
+	return translated.Write(fileName)
 }

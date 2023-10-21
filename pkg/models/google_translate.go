@@ -2,13 +2,16 @@ package models
 
 import (
 	"context"
-	"github.com/asticode/go-astisub"
+	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"cloud.google.com/go/translate"
+	"github.com/asticode/go-astisub"
 	"go.uber.org/zap"
 	"google.golang.org/api/option"
-	"google.golang.org/api/translate"
 )
 
 type GoogleTranslateRequest struct {
@@ -87,4 +90,18 @@ func (tr *GoogleTranslateRequest) getClient() *translate.Client {
 		}
 	}
 	return tr.client
+}
+
+func (tr *GoogleTranslateRequest) WriteTranslatedToNewFile() error {
+	fileName := strings.Replace(
+		tr.SubtitleFileName,
+		tr.Extension,
+		fmt.Sprintf("_%s.ttml", tr.TargetLanguage), 1)
+
+	log.Printf("Writing results to %s", fileName)
+	translated, err := tr.GetTranslated()
+	if err != nil {
+		return err
+	}
+	return translated.Write(fileName)
 }

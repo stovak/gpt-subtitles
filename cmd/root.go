@@ -9,7 +9,6 @@ import (
 	"github.com/stovak/gpt-subtitles/pkg/models"
 	"go.uber.org/zap"
 	"os"
-	"strings"
 )
 
 var (
@@ -27,7 +26,7 @@ func initLogger() *zap.Logger {
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "subtitles",
-	Short: "Translate a subtitle file using GPT-4",
+	Short: "Translate a subtitle file using GPT-4 or Google Translate",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var tr models.TranslationRequest
 		Logger.Info("Root Command Exec:")
@@ -66,13 +65,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		translated, err := tr.GetTranslated()
-		if err != nil {
-			return err
-		}
-		buf := new(strings.Builder)
-		err = translated.WriteToTTML(buf)
-		Logger.Debugf("Translated: %s", buf.String())
+		err = tr.WriteTranslatedToNewFile()
 		return err
 	},
 }
@@ -96,7 +89,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gpt-subtitles.yaml)")
 	rootCmd.PersistentFlags().StringP("sourceLanguage", "s", "en", "SourceLanguage... E.g. en for English")
 	rootCmd.PersistentFlags().StringP("targetLanguage", "t", "es", "DestinationLanguage... E.g. es for Spanish")
-	rootCmd.PersistentFlags().StringP("engine", "e", "google", "Translation Engine: google or gpt")
+	rootCmd.PersistentFlags().StringP("engine", "e", "gpt", "Translation Engine: google or gpt")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

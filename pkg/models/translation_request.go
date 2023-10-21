@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -38,20 +37,6 @@ func (tr *TranslationRequestBase) Parse() error {
 	tr.Subtitles, err = astisub.OpenFile(tr.SubtitleFileName)
 	tr.Extension = filepath.Ext(tr.SubtitleFileName)
 	return err
-}
-
-func (tr *TranslationRequestBase) WriteTranslatedToNewFile() error {
-	fileName := strings.Replace(tr.SubtitleFileName, tr.Extension, ".ttml", 1)
-	log.Printf("Writing results to %s", fileName)
-	translated, err := tr.GetTranslated()
-	if err != nil {
-		return err
-	}
-	return translated.Write(fileName)
-}
-
-func (tr *TranslationRequestBase) GetTranslated() (*astisub.Subtitles, error) {
-	panic("implement me")
 }
 
 // GetSourceText returns a string of all the lines in the subtitle file
