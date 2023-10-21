@@ -16,6 +16,9 @@ type TranslationRequest interface {
 	String() string
 	GetTranslated() (*astisub.Subtitles, error)
 	GetSourceText() []string
+	GetLogger() *zap.SugaredLogger
+	GetSourceLanguage() language.Tag
+	GetTargetLanguage() language.Tag
 }
 
 type TranslationRequestBase struct {
@@ -58,4 +61,16 @@ func (tr *TranslationRequestBase) String() string {
 		tr.Logger.Fatalf("Error writing to string: %s", err)
 	}
 	return buf.String()
+}
+
+func (tr *TranslationRequestBase) GetLogger() *zap.SugaredLogger {
+	return tr.Logger
+}
+
+func (tr *TranslationRequestBase) GetSourceLanguage() language.Tag {
+	return tr.SourceLanguage
+}
+
+func (tr *TranslationRequestBase) GetTargetLanguage() language.Tag {
+	return tr.TargetLanguage
 }

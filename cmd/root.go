@@ -18,7 +18,7 @@ var (
 var cfgFile string
 
 func initLogger() *zap.Logger {
-	logger, _ := zap.NewDevelopment()
+	logger, _ := zap.NewProduction()
 	defer logger.Sync()
 	return logger
 }
@@ -93,6 +93,9 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
+
+	rootCmd.AddCommand(translateAllCmd)
+	rootCmd.AddCommand(translateOneCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

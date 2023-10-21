@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"reflect"
 	"strings"
 
 	"github.com/asticode/go-astisub"
@@ -45,7 +44,7 @@ func NewGPTTranslationRequestFromFile(fileName string, sourceLanguage string, de
 
 func (tr *GPTTranslationRequest) Translate() error {
 	var err error
-	tr.Logger.Debugf("Translating: %s", tr.SubtitleFileName)
+	tr.Logger.Debugf("Translating: %s %s => %s", tr.SubtitleFileName, tr.SourceLanguage, tr.TargetLanguage)
 	prompt, err := tr.toPrompt()
 	if err != nil {
 		return err
@@ -60,7 +59,7 @@ func (tr *GPTTranslationRequest) Translate() error {
 			},
 		},
 	}
-	tr.Logger.Debugf("Sending request: %#v", req)
+	//tr.Logger.Debugf("Sending request: %#v", req)
 	tr.results, err = tr.getClient().Send(context.Background(), &req)
 	if err != nil {
 		log.Fatal(err)
@@ -80,7 +79,7 @@ func (tr *GPTTranslationRequest) toPrompt() (string, error) {
 			return "", err
 		}
 	}
-	tr.SourceText = strings.Join(tr.GetSourceText(), "\n")
+	tr.SourceText = strings.Join(tr.GetSourceText(), "|")
 	err = tr.RequestTemplate.Execute(buf, tr)
 	tr.Logger.Debugf("Prompt: %s => %s", buf.String(), err)
 	return buf.String(), err
@@ -106,27 +105,43 @@ func (tr *GPTTranslationRequest) getClient() *chatgpt.Client {
 func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
 	var err error
 	if tr.results == nil {
-		err := tr.Translate()
-		if err != nil {
-			return nil, err
-		}
+		return nil, fmt.Errorf("no results to translate")
 	}
-	toReturn := reflect.ValueOf(tr.Subtitles).Elem().Interface().(astisub.Subtitles)
-	region, _ := tr.TargetLanguage.Region()
+	toReturn := astisub.NewSubtitles()
+	r, _ := tr.TargetLanguage.Region()
+	region := &astisub.Region{
+		ID: r.String(),
+	}
 
 	toReturn.Regions = map[string]*astisub.Region{
-		region.String(): &astisub.Region{
-			ID: region.String(),
-		},
+		region.ID: region,
 	}
 	if err != nil {
 		return nil, err
 	}
-	resultLines := strings.Split(tr.results.Choices[0].Message.Content, "\n")
-	for i, _ := range tr.Subtitles.Items {
-		toReturn.Items[i].Lines[0].Items[0].Text = resultLines[i]
+	resultLines := strings.Split(tr.results.Choices[0].Message.Content, "|")
+	if len(resultLines) != len(tr.Subtitles.Items) {
+		tr.Logger.Errorf("number of lines in result (%d) does not match number of lines in source (%d)", len(resultLines), len(tr.Subtitles.Items))
+		tr.Logger.Errorf("Returned Translation: %#v", tr.results)
+		return nil, fmt.Errorf("number of lines in result (%d) does not match number of lines in source (%d)", len(resultLines), len(tr.Subtitles.Items))
 	}
-	return &toReturn, nil
+	for num, item := range tr.Subtitles.Items {
+		toReturn.Items = append(toReturn.Items, &astisub.Item{
+			Region:  region,
+			StartAt: item.StartAt,
+			EndAt:   item.EndAt,
+			Lines: []astisub.Line{
+				{
+					Items: []astisub.LineItem{
+						{
+							Text: resultLines[num],
+						},
+					},
+				},
+			},
+		})
+	}
+	return toReturn, nil
 }
 
 func (tr *GPTTranslationRequest) WriteTranslatedToNewFile() error {
@@ -135,7 +150,7 @@ func (tr *GPTTranslationRequest) WriteTranslatedToNewFile() error {
 		tr.Extension,
 		fmt.Sprintf("_%s.ttml", tr.TargetLanguage), 1)
 
-	log.Printf("Writing results to %s", fileName)
+	tr.GetLogger().Infof("Writing results to %s", fileName)
 	translated, err := tr.GetTranslated()
 	if err != nil {
 		return err
