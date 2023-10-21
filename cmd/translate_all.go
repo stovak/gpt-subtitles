@@ -4,10 +4,11 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"maps"
+
 	"github.com/spf13/cobra"
 	"github.com/stovak/gpt-subtitles/pkg/actions"
 	"github.com/stovak/gpt-subtitles/pkg/models"
-	"maps"
 )
 
 // translate:allCmd represents the translate:all command
@@ -38,7 +39,7 @@ to quickly create a Cobra application.`,
 		// 2. remove the source language from the map
 		delete(langCopy, source)
 		// 3. for each language in the list, create a new translation request and send it to the translation engine
-		for k, _ := range langCopy {
+		for k := range langCopy {
 			switch engine {
 			case "google":
 				Logger.Info("Using Google Translate")
