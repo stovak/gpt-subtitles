@@ -11,13 +11,17 @@ import (
 )
 
 var (
-	Logger *zap.SugaredLogger = initLogger().Sugar()
+	Logger      *zap.SugaredLogger = initLogger().Sugar()
+	enableDebug                    = false
 )
 
 var cfgFile string
 
 func initLogger() *zap.Logger {
 	logger, _ := zap.NewProduction()
+	if enableDebug {
+		logger, _ = zap.NewDevelopment()
+	}
 	defer logger.Sync()
 	return logger
 }
@@ -52,6 +56,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("sourceLanguage", "s", "en", "SourceLanguage... E.g. en for English")
 	rootCmd.PersistentFlags().StringP("targetLanguage", "t", "es", "DestinationLanguage... E.g. es for Spanish")
 	rootCmd.PersistentFlags().StringP("engine", "e", "gpt", "Translation Engine: google or gpt")
+	rootCmd.PersistentFlags().BoolVar(&enableDebug, "debug", os.Getenv("DEBUG") == "true", "Enable debug mode")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

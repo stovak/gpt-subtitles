@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 func GetRoot() string {
@@ -26,4 +27,17 @@ func GetRoot() string {
 		}
 	}
 	return repoRoot
+}
+
+func TrimSlice(slice []string) []string {
+	var toReturn []string
+	for i, s := range slice {
+		// if the string is not empty, add it to the slice
+		if strings.Trim(s, "") != "" {
+			toReturn = append(toReturn, slice[i])
+			break
+		}
+
+	}
+	return toReturn
 }

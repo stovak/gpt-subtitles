@@ -4,6 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"maps"
 
 	"github.com/spf13/cobra"
@@ -51,6 +52,10 @@ to quickly create a Cobra application.`,
 				break
 			default:
 				Logger.Fatalf("Unknown engine %s", engine)
+				return fmt.Errorf("unknown engine %s", engine)
+			}
+			if err != nil {
+				return err
 			}
 			err := actions.TranslateOne(tr)
 			if err != nil {

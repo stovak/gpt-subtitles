@@ -82,7 +82,7 @@ func (tr *TranslationRequestBase) GetTargetLanguage() language.Tag {
 
 func (tr *TranslationRequestBase) WriteErrorDiff(translatedText []string) error {
 	t := table.NewWriter()
-	t.AppendHeader(table.Row{"Start", "End", "Source", "Translated"})
+	t.AppendHeader(table.Row{"Source", "Translated"})
 	fileName := strings.Replace(
 		tr.SubtitleFileName,
 		tr.Extension,
@@ -90,6 +90,7 @@ func (tr *TranslationRequestBase) WriteErrorDiff(translatedText []string) error 
 
 	tr.GetLogger().Infof("Writing error diff to %s", fileName)
 	sourceText := tr.GetSourceText()
+
 	iterations := max(len(sourceText), len(translatedText))
 	for i := 0; i < iterations; i++ {
 		if len(sourceText) <= i {

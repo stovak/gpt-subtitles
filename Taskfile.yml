@@ -22,4 +22,4 @@ tasks:
     silent: true
   dog-park:
       cmds:
-        - ./bin/subtitles translate:all -s en "$HOME/Movies/First Fourteen Minutes_iTT_English.ttml"
+        - ./bin/subtitles translate:all -s en "$HOME/Movies/First Fourteen Minutes_iTT_English.srt.vtt"

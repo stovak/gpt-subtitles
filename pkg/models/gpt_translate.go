@@ -50,8 +50,10 @@ func (tr *GPTTranslationRequest) Translate() error {
 	sourceText := tr.GetSourceText()
 	// Iterate over the slice in batches of 100
 	for i := 0; i < len(sourceText); i += 100 {
+		sourceTextSlice := sourceText[i : i+100]
+		sourceTextSlice = util.TrimSlice(sourceTextSlice)
 		// Call the function with the current batch of strings
-		prompt, err := tr.toPrompt(sourceText[i : i+100])
+		prompt, err := tr.toPrompt(sourceTextSlice)
 		if err != nil {
 			return err
 		}
@@ -65,13 +67,23 @@ func (tr *GPTTranslationRequest) Translate() error {
 				},
 			},
 		}
-		tr.Logger.Infof("Sending a batch of %d lines to OpenAI", len(sourceText[i:i+100]))
+		tr.Logger.Infof("Sending a batch of %d lines to OpenAI", len(sourceTextSlice))
 		resp, err := tr.getClient().Send(context.Background(), &req)
 		if err != nil || len(resp.Choices) == 0 {
 			return err
 		}
+		translatedText := strings.Split(resp.Choices[0].Message.Content, "|")
+		diff := len(sourceText) - len(translatedText)
+		if diff != 0 {
+			tr.Logger.Warnf("Translated text length (%d) does not match source text length (%d)", len(translatedText), len(sourceTextSlice))
+		}
+		for i := 0; i < diff; i++ {
+			// Add blank spaces and deal with with this later
+			translatedText = append(translatedText, " ")
+		}
+
 		// Split the results and then add them all to the slice of strings for results
-		tr.results = append(tr.results, strings.Split(resp.Choices[0].Message.Content, "|")...)
+		tr.results = append(tr.results, translatedText...)
 		tr.GetLogger().Debugf("%d Results total", len(tr.results))
 		if err != nil {
 			log.Fatal(err)
@@ -84,17 +96,13 @@ func (tr *GPTTranslationRequest) Translate() error {
 func (tr *GPTTranslationRequest) toPrompt(batch []string) (string, error) {
 	var err error
 	var buf = new(strings.Builder)
-
-	// Make sure input has been parsed
-	if tr.Subtitles == nil {
-		tr.Subtitles, err = astisub.OpenFile(tr.SubtitleFileName)
-		if err != nil {
-			return "", err
-		}
-	}
-
+	// String the source text together in a single string separated by |
 	tr.SourceText = strings.Join(batch, "|")
+	// Execute the template and capture the output
 	err = tr.RequestTemplate.Execute(buf, tr)
+	if err != nil {
+		return "", err
+	}
 	tr.Logger.Debugf("Prompt: %s => %s", buf.String(), err)
 	return buf.String(), err
 }
