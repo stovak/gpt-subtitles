@@ -51,7 +51,7 @@ func (tr *GPTTranslationRequest) Translate() error {
 	// Iterate over the slice in batches of 100
 	for i := 0; i < len(sourceText); i += 100 {
 		sourceTextSlice := sourceText[i : i+100]
-		sourceTextSlice = util.TrimSlice(sourceTextSlice)
+		tr.Logger.Debugf("Translating %d lines", len(sourceTextSlice))
 		// Call the function with the current batch of strings
 		prompt, err := tr.toPrompt(sourceTextSlice)
 		if err != nil {
