@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,7 +11,6 @@ import (
 
 	"cloud.google.com/go/translate"
 	"github.com/asticode/go-astisub"
-	"go.uber.org/zap"
 	"google.golang.org/api/option"
 )
 
@@ -20,7 +20,7 @@ type GoogleTranslateRequest struct {
 	results []translate.Translation
 }
 
-func NewGoogleTranslationRequestFromFile(fileName string, sourceLanguage string, destinationLanguage string, log *zap.SugaredLogger) (TranslationRequest, error) {
+func NewGoogleTranslationRequestFromFile(fileName string, sourceLanguage string, destinationLanguage string, cmd *cobra.Command) (TranslationRequest, error) {
 	subs, err := astisub.OpenFile(fileName)
 	if err != nil {
 		return &GoogleTranslateRequest{}, err
@@ -29,7 +29,7 @@ func NewGoogleTranslationRequestFromFile(fileName string, sourceLanguage string,
 		TranslationRequestBase: TranslationRequestBase{
 			SubtitleFileName: fileName,
 			Subtitles:        subs,
-			Logger:           log,
+			Cmd:              cmd,
 		},
 	}
 	toReturn.ParseSourceTarget(sourceLanguage, destinationLanguage)
@@ -39,9 +39,9 @@ func NewGoogleTranslationRequestFromFile(fileName string, sourceLanguage string,
 
 func (tr *GoogleTranslateRequest) Translate() error {
 	var err error
-	tr.Logger.Infof("Translating %s to %s", tr.SourceLanguage, tr.TargetLanguage)
+	tr.Cmd.Printf("Translating %s to %s", tr.SourceLanguage, tr.TargetLanguage)
 	sourceText := tr.GetSourceText()
-	tr.Logger.Infof("Source Text: %#v", sourceText)
+	tr.Cmd.Printf("Source Text: %#v", sourceText)
 	tr.results, err = tr.getClient().Translate(context.Background(), tr.GetSourceText(), tr.TargetLanguage, &translate.Options{
 		Source: tr.SourceLanguage,
 		Format: translate.Text,
@@ -81,12 +81,12 @@ func (tr *GoogleTranslateRequest) getClient() *translate.Client {
 	if tr.client == nil {
 		key := os.Getenv("GOOGLE_TRANSLATE_API_KEY")
 		if key == "" {
-			tr.Logger.Fatal("GOOGLE_TRANSLATE_API_KEY environment variable not set")
+			tr.Cmd.Printf("GOOGLE_TRANSLATE_API_KEY environment variable not set")
 		}
 		var err error
 		tr.client, err = translate.NewClient(context.Background(), option.WithCredentialsFile(os.ExpandEnv("$HOME/.keys/subtitles-translator@dog-park-adjacent.iam.gserviceaccount.com.key")))
 		if err != nil {
-			tr.Logger.Fatal(err)
+			tr.Cmd.PrintErrf("Translate get client error: %s", err)
 		}
 	}
 	return tr.client

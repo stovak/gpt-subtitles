@@ -1,7 +1,7 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package subs
 
 import (
 	"github.com/stovak/gpt-subtitles/pkg/actions"
@@ -22,7 +22,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var tr models.TranslationRequest
-		Logger.Info("Root Command Exec:")
+		cmd.Printf("Root Command Exec:")
 		source, err := cmd.Flags().GetString("sourceLanguage")
 		if err != nil {
 			return err
@@ -37,15 +37,15 @@ to quickly create a Cobra application.`,
 		}
 		switch engine {
 		case "google":
-			Logger.Info("Using Google Translate")
-			tr, err = models.NewGoogleTranslationRequestFromFile(args[0], source, dest, Logger)
+			cmd.Print("Using Google Translate")
+			tr, err = models.NewGoogleTranslationRequestFromFile(args[0], source, dest, cmd)
 			break
 		case "gpt":
-			Logger.Info("Using GPT Translate")
-			tr, err = models.NewGPTTranslationRequestFromFile(args[0], source, dest, Logger)
+			cmd.Print("Using GPT Translate")
+			tr, err = models.NewGPTTranslationRequestFromFile(args[0], source, dest, cmd)
 			break
 		default:
-			Logger.Fatalf("Unknown engine %s", engine)
+			cmd.Printf("Unknown engine %s", engine)
 		}
 		return actions.TranslateOne(tr)
 	},

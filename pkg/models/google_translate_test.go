@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"path"
 	"testing"
 
@@ -31,7 +32,8 @@ func TestGoogleTranslateRequest_Translate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tr, err := NewGoogleTranslationRequestFromFile(
 				path.Join(util.GetRoot(), "test-fixtures", tt.fileName),
-				tt.sourceLanguage, tt.destinationLanguage, observedLogger.Sugar())
+				tt.sourceLanguage, tt.destinationLanguage, &cobra.Command{},
+			)
 			assert.NoError(t, err, fmt.Sprintf("NewGoogleTranslationRequestFromFile(%s, %s, %s)", tt.fileName, tt.sourceLanguage, tt.destinationLanguage))
 			t.Logf("tr: %#v", tr)
 			st := tr.GetSourceText()

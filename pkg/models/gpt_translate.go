@@ -11,8 +11,8 @@ import (
 
 	"github.com/asticode/go-astisub"
 	"github.com/ayush6624/go-chatgpt"
+	"github.com/spf13/cobra"
 	"github.com/stovak/gpt-subtitles/pkg/util"
-	"go.uber.org/zap"
 )
 
 type GPTTranslationRequest struct {
@@ -23,7 +23,7 @@ type GPTTranslationRequest struct {
 	SourceText      string
 }
 
-func NewGPTTranslationRequestFromFile(fileName string, sourceLanguage string, destinationLanguage string, log *zap.SugaredLogger) (TranslationRequest, error) {
+func NewGPTTranslationRequestFromFile(fileName string, sourceLanguage string, destinationLanguage string, cmd *cobra.Command) (TranslationRequest, error) {
 	subs, err := astisub.OpenFile(fileName)
 	if err != nil {
 		return &GPTTranslationRequest{}, err
@@ -36,7 +36,7 @@ func NewGPTTranslationRequestFromFile(fileName string, sourceLanguage string, de
 			SubtitleFileName: fileName,
 			Extension:        path.Ext(fileName),
 			Subtitles:        subs,
-			Logger:           log,
+			Cmd:              cmd,
 		},
 		SourceText:      "",
 		RequestTemplate: template.Must(template.ParseFiles(path.Join(util.GetRoot(), "templates/gpt-subtitle-request.tmpl"))),
@@ -46,7 +46,7 @@ func NewGPTTranslationRequestFromFile(fileName string, sourceLanguage string, de
 }
 
 func (tr *GPTTranslationRequest) Translate() error {
-	tr.Logger.Debugf("Translating: %s %s => %s", tr.SubtitleFileName, tr.SourceLanguage, tr.TargetLanguage)
+	tr.Cmd.Printf("Translating: %s %s => %s", tr.SubtitleFileName, tr.SourceLanguage, tr.TargetLanguage)
 	sourceText := tr.GetSourceText()
 	// Iterate over the slice in batches of 100
 	for i := 0; i < len(sourceText); i += 100 {
@@ -57,7 +57,7 @@ func (tr *GPTTranslationRequest) Translate() error {
 		if err != nil {
 			return err
 		}
-		tr.Logger.Debugf("Prompt: %s", prompt)
+		tr.Cmd.Printf("Prompt: %s", prompt)
 		req := chatgpt.ChatCompletionRequest{
 			Model: chatgpt.GPT4,
 			Messages: []chatgpt.ChatMessage{
@@ -67,27 +67,18 @@ func (tr *GPTTranslationRequest) Translate() error {
 				},
 			},
 		}
-		tr.Logger.Infof("Sending a batch of %d lines to OpenAI", len(sourceTextSlice))
+		tr.Cmd.Printf("Sending a batch of %d lines to OpenAI", len(sourceText[i:i+100]))
 		resp, err := tr.getClient().Send(context.Background(), &req)
-		if err != nil || len(resp.Choices) == 0 {
+		if err != nil {
 			return err
 		}
-		translatedText := strings.Split(resp.Choices[0].Message.Content, "|")
-		diff := len(sourceText) - len(translatedText)
-		if diff != 0 {
-			tr.Logger.Warnf("Translated text length (%d) does not match source text length (%d)", len(translatedText), len(sourceTextSlice))
+		if len(resp.Choices) == 0 {
+			return fmt.Errorf("no choices returned")
 		}
-		for i := 0; i < diff; i++ {
-			// Add blank spaces and deal with with this later
-			translatedText = append(translatedText, " ")
-		}
-
 		// Split the results and then add them all to the slice of strings for results
-		tr.results = append(tr.results, translatedText...)
-		tr.GetLogger().Debugf("%d Results total", len(tr.results))
-		if err != nil {
-			log.Fatal(err)
-		}
+		tr.results = append(tr.results, strings.Split(resp.Choices[0].Message.Content, "|")...)
+		tr.Cmd.Printf("%d Results total", len(tr.results))
+
 	}
 
 	return nil
@@ -100,10 +91,7 @@ func (tr *GPTTranslationRequest) toPrompt(batch []string) (string, error) {
 	tr.SourceText = strings.Join(batch, "|")
 	// Execute the template and capture the output
 	err = tr.RequestTemplate.Execute(buf, tr)
-	if err != nil {
-		return "", err
-	}
-	tr.Logger.Debugf("Prompt: %s => %s", buf.String(), err)
+	tr.Cmd.Printf("Prompt: %s => %s", buf.String(), err)
 	return buf.String(), err
 }
 
@@ -125,7 +113,6 @@ func (tr *GPTTranslationRequest) getClient() *chatgpt.Client {
 // GetTranslated returns a new Subtitles object with the translated text
 // err is non-nil if there was an error translating
 func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
-	var err error
 	if tr.results == nil {
 		return nil, fmt.Errorf("no results to translate")
 	}
@@ -137,9 +124,6 @@ func (tr *GPTTranslationRequest) GetTranslated() (*astisub.Subtitles, error) {
 
 	toReturn.Regions = map[string]*astisub.Region{
 		region.ID: region,
-	}
-	if err != nil {
-		return nil, err
 	}
 	if len(tr.results) != len(tr.Subtitles.Items) {
 		_ = tr.WriteErrorDiff(tr.results)

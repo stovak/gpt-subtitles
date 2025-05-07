@@ -4,10 +4,14 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
-	"os"
+
+	"github.com/stovak/gpt-subtitles/cmd/drop"
+	"github.com/stovak/gpt-subtitles/cmd/subs"
 )
 
 var (
@@ -47,7 +51,6 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -61,8 +64,10 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 
-	rootCmd.AddCommand(translateAllCmd)
-	rootCmd.AddCommand(translateOneCmd)
+	rootCmd.AddCommand(subs.TranslateAllCmd)
+	rootCmd.AddCommand(subs.TranslateAllCmd)
+	rootCmd.AddCommand(drop.ListCmd)
+
 }
 
 // initConfig reads in config file and ENV variables if set.

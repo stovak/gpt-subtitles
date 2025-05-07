@@ -2,20 +2,20 @@ package models
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/asticode/go-astisub"
 	"github.com/jedib0t/go-pretty/v6/table"
-	"go.uber.org/zap"
 	"golang.org/x/text/language"
 )
 
 type TranslationRequest interface {
-	GetLogger() *zap.SugaredLogger
 	GetSourceLanguage() language.Tag
 	GetSourceText() []string
+	GetCmd() *cobra.Command
 	GetTranslatedText() []string
 	GetTargetLanguage() language.Tag
 	GetTranslated() (*astisub.Subtitles, error)
@@ -32,7 +32,7 @@ type TranslationRequestBase struct {
 	SubtitleFileName string
 	Extension        string
 	Subtitles        *astisub.Subtitles
-	Logger           *zap.SugaredLogger
+	Cmd              *cobra.Command
 }
 
 func (tr *TranslationRequestBase) ParseSourceTarget(source string, target string) {
@@ -55,7 +55,7 @@ func (tr *TranslationRequestBase) GetSourceText() []string {
 			toReturn = append(toReturn, line.String())
 		}
 	}
-	tr.Logger.Debugf("Split text: %+v", toReturn)
+	tr.Cmd.Printf("Split text: %+v", toReturn)
 	return toReturn
 }
 
@@ -63,13 +63,9 @@ func (tr *TranslationRequestBase) String() string {
 	buf := new(strings.Builder)
 	err := tr.Subtitles.WriteToTTML(buf)
 	if err != nil {
-		tr.Logger.Fatalf("Error writing to string: %s", err)
+		tr.Cmd.Printf("Error writing to string: %s", err)
 	}
 	return buf.String()
-}
-
-func (tr *TranslationRequestBase) GetLogger() *zap.SugaredLogger {
-	return tr.Logger
 }
 
 func (tr *TranslationRequestBase) GetSourceLanguage() language.Tag {
@@ -88,7 +84,7 @@ func (tr *TranslationRequestBase) WriteErrorDiff(translatedText []string) error 
 		tr.Extension,
 		fmt.Sprintf("_%s_error_diff.ttml", tr.TargetLanguage), 1)
 
-	tr.GetLogger().Infof("Writing error diff to %s", fileName)
+	tr.Cmd.Printf("Writing error diff to %s", fileName)
 	sourceText := tr.GetSourceText()
 
 	iterations := max(len(sourceText), len(translatedText))
@@ -112,6 +108,10 @@ func (tr *TranslationRequestBase) WriteToFile(variant string, contents string) e
 		tr.SubtitleFileName,
 		tr.Extension,
 		fmt.Sprintf("_%s.ttml", variant), 1)
-	tr.GetLogger().Infof("Writing results %s to %s", variant, fileName)
+	tr.Cmd.Printf("Writing results %s to %s", variant, fileName)
 	return os.WriteFile(fileName, []byte(contents), 0700)
+}
+
+func (tr *TranslationRequestBase) GetCmd() *cobra.Command {
+	return tr.Cmd
 }

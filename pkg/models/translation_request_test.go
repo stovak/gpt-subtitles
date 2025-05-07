@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"github.com/asticode/go-astisub"
+	"github.com/spf13/cobra"
 	"github.com/stovak/gpt-subtitles/pkg/util"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
@@ -45,7 +46,7 @@ func TestTranslationRequestBase_ParseSourceTarget(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tr := &TranslationRequestBase{
-				Logger: observedLogger.Sugar(),
+				Cmd: &cobra.Command{},
 			}
 			tr.ParseSourceTarget(tt.args.source, tt.args.target)
 			assert.IsTypef(t, language.Tag{}, tr.SourceLanguage, "SourceLanguage is not a language.Tag")
@@ -84,7 +85,7 @@ func TestTranslationRequestBase_Parse(t *testing.T) {
 				SubtitleFileName: path.Join(util.GetRoot(), "test-fixtures", tt.fields.SubtitleFileName),
 				Extension:        tt.fields.Extension,
 				Subtitles:        tt.fields.Subtitles,
-				Logger:           tt.fields.Logger,
+				Cmd:              &cobra.Command{},
 			}
 			tt.wantErr(t, tr.Parse(), fmt.Sprintf("Parse()"))
 			assert.Equalf(t, ".ttml", tr.Extension, "Extension is not .ttml")

@@ -1,7 +1,7 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package subs
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 )
 
 // translate:allCmd represents the translate:all command
-var translateAllCmd = &cobra.Command{
+var TranslateAllCmd = &cobra.Command{
 	Use:   "translate:all",
 	Short: "Translate a base subtitle file using GPT-4 or Google Translate into all the languages available in the config file",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -24,7 +24,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var tr models.TranslationRequest
-		Logger.Info("Root Command Exec:")
+		cmd.Println("Root Command Exec:")
 		source, err := cmd.Flags().GetString("sourceLanguage")
 		if err != nil {
 			return err
@@ -43,23 +43,19 @@ to quickly create a Cobra application.`,
 		for k := range langCopy {
 			switch engine {
 			case "google":
-				Logger.Info("Using Google Translate")
-				tr, err = models.NewGoogleTranslationRequestFromFile(args[0], source, k, Logger)
+				cmd.Println("Using Google Translate")
+				tr, err = models.NewGoogleTranslationRequestFromFile(args[0], source, k, cmd)
 				break
 			case "gpt":
-				Logger.Info("Using GPT Translate")
-				tr, err = models.NewGPTTranslationRequestFromFile(args[0], source, k, Logger)
+				cmd.Println("Using GPT Translate")
+				tr, err = models.NewGPTTranslationRequestFromFile(args[0], source, k, cmd)
 				break
 			default:
-				Logger.Fatalf("Unknown engine %s", engine)
-				return fmt.Errorf("unknown engine %s", engine)
-			}
-			if err != nil {
-				return err
+				cmd.Println("Unknown engine %s", engine)
 			}
 			err := actions.TranslateOne(tr)
 			if err != nil {
-				Logger.Warnf("Error translating %s => %s: %s", source, k, err)
+				cmd.Println("Error translating %s => %s: %s", source, k, err)
 			}
 		}
 
